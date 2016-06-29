@@ -7,6 +7,18 @@ from w3af_api_client.utils.exceptions import APIException
 
 class TestScan(TestBase):
     @classmethod
+    def __sleep(cls):
+        time.sleep(1)
+        try:
+            cls.__sleep_count += 1
+        except AttributeError:
+            cls.__sleep_count = 1
+
+        if cls.__sleep_count == 60:
+            print('.', end='')
+            cls.__sleep_count = 0
+
+    @classmethod
     def __wait_scan_to_start(cls, scan):
         while True:
             try:
@@ -16,12 +28,12 @@ class TestScan(TestBase):
                 if e.args[0] != 'Failed to retrieve scan status. Received HTTP response code 500. ' \
                                 'Message: "Can NOT call get_run_time before start()."':
                     raise
-                time.sleep(1)
+                cls.__sleep()
 
     @classmethod
     def __wait_scan_to_end(cls, scan):
         while scan.get_status()['status'] == 'Running':
-            time.sleep(1)
+            cls.__sleep()
 
     def test_scan(self):
         profile = self._get_profile('fast_scan')
