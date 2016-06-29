@@ -15,7 +15,7 @@ class TestScan(TestBase):
             cls.__sleep_count = 1
 
         if cls.__sleep_count == 60:
-            print('.', end='')
+            print('.', end='', flush=True)
             cls.__sleep_count = 0
 
     @classmethod
