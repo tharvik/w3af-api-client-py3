@@ -19,7 +19,8 @@ services:
 before_install:
   - docker pull andresriancho/w3af-api
   - docker run --detach --publish 5000:5000 andresriancho/w3af-api
-  - curl localhost:5000
+  - while ! curl --silent localhost:5000 | grep docs.w3af.org; do sleep 1; done
+
 
 install:
   - python setup.py install
