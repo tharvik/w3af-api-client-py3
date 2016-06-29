@@ -15,11 +15,20 @@ python:
 services:
   - docker
 
- 
+env:
+  global:
+    - W3AF_HOST=localhost
+    - W3AF_PORT=5000
+    - W3AF_TARGETS=http://localhost:80
+
+
 before_install:
   - docker pull andresriancho/w3af-api
-  - docker run --detach --publish 5000:5000 andresriancho/w3af-api
-  - while ! curl --silent localhost:5000 | grep docs.w3af.org; do sleep 1; done
+  - docker run --detach --publish ${W3AF_PORT}:5000 andresriancho/w3af-api
+  - while ! curl --silent localhost:${W3AF_PORT} | grep docs.w3af.org; do sleep 1; done
+
+  - docker pull citizenstig/dvwa
+  - docker run --detach --publish 80:80 citizenstig/dvwa
 
 
 install:
@@ -27,4 +36,5 @@ install:
 
 
 script:
-  - nosetests
+  #- nosetests
+  - python -m unittest -v
